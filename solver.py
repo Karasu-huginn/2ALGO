@@ -5,7 +5,10 @@ class Solver:
     def __init__(self):
         self.grid = GRID
         self.stars_grid = [[0] * len(GRID) for i in range(len(GRID))]
-        self.marked_grid = [[0] * len(GRID) for i in range(len(GRID))]
+        self.mk_vert_grid = [[0] * len(GRID) for i in range(len(GRID))]
+        self.mk_hor_grid = [[0] * len(GRID) for i in range(len(GRID))]
+        self.mk_reg_grid = [[0] * len(GRID) for i in range(len(GRID))]
+        self.mk_nbor_grid = [[0] * len(GRID) for i in range(len(GRID))]
         self.stars_number = STARS_NUMBER
 
     def count_stars(self):
@@ -16,40 +19,30 @@ class Solver:
                     count += 1
         return count    
     
-    def mark_lines(self, x, y):
-        coords = set()
+    def mark_lines(self, value, x, y):
         for i in range(len(self.grid)):
-            coords.add((x,i))
-            coords.add((i,y))
-        return coords
+            self.mk_hor_grid[x][i] += value
+            self.mk_vert_grid[i][y] += value
 
-    def mark_colors(self, x, y):
-        coords = set()
+    def mark_regions(self, value, x, y):
         for i in range(len(self.grid)):
             for j in range(len(self.grid)):
                 if self.grid[i][j] == self.grid[x][y]:
-                    coords.add((i,j))
-        return coords
+                    self.mk_reg_grid[i][j] += value
                     
-    
-    def mark_neighbors(self, x, y):
-        coords = set()
+    def mark_neighbors(self, value, x, y):
         for i in range(-1,2):
             for j in range(-1,2):
                 if x+i >= len(self.grid) or y+j >= len(self.grid):
                     continue
-                coords.add((x+i,y+j))
-        return coords
+                if i == 0 and j == 0:
+                    continue
+                self.mk_nbor_grid[x+i][y+j] += value
     
     def mark_cells(self, value, x, y):
-        coords = set()
-        coords.update(self.mark_lines(x, y))
-        coords.update(self.mark_colors(x, y))
-        coords.update(self.mark_neighbors(x, y))
-        for coord in coords:
-            curr_x = coord[0]
-            curr_y = coord[1]
-            self.marked_grid[curr_x][curr_y] += value
+        self.mark_lines(value, x, y)
+        self.mark_regions(value, x, y)
+        self.mark_neighbors(value, x, y)
 
     def ck_lines(self, x, y):
         count_x = 0
@@ -63,7 +56,7 @@ class Solver:
                 return False
         return True
 
-    def ck_colors(self, x, y):
+    def ck_regions(self, x, y):
         count = 0
         for i in range(len(self.grid)):
             for j in range(len(self.grid)):
@@ -88,7 +81,7 @@ class Solver:
     def is_placeable(self, x, y):
         if not self.ck_lines(x, y):
             return False
-        if not self.ck_colors(x,y):
+        if not self.ck_regions(x,y):
             return False
         if not self.ck_neighbors(x,y):
             return False
