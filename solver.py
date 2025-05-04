@@ -59,6 +59,17 @@ class Solver:
         return True
     
     def __str__(self):
+        string = ""
+        for x in range(len(self.grid)):
+            for y in range(len(self.grid)):
+                if self.stars_grid[x][y] == "*":
+                    string += COLORS[int(self.grid[x][y])]+f"{BOLD}<>{RESET}"
+                else:
+                    string += COLORS[int(self.grid[x][y])]+f"  {RESET}"
+            string += "\n"
+        return string
+
+"""
         for x in range(len(self.grid)):
             for y in range(len(self.grid)):
                 if self.stars_grid[x][y] != "*":
@@ -66,4 +77,4 @@ class Solver:
                 else:
                     print(COLORS[int(self.grid[x][y])]+f"{BOLD}<>{RESET}", end="")
             print()
-
+"""
