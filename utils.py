@@ -12,3 +12,10 @@ ALT_BLUE = '\033[104m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
 COLORS = [WHITE,BLACK,RED,GREEN,YELLOW,BLUE,PURPLE,CYAN,GREY,ALT_RED,ALT_BLUE]
+
+def print_grid(array):
+    for row in array:
+        for cell in row:
+            print(cell, end=" ")
+        print()
+    print()

@@ -5,6 +5,7 @@ class Solver:
     def __init__(self):
         self.grid = GRID
         self.stars_grid = [[0] * len(GRID) for i in range(len(GRID))]
+        self.marked_grid = [[0] * len(GRID) for i in range(len(GRID))]
         self.stars_number = STARS_NUMBER
 
     def count_stars(self):
@@ -13,7 +14,42 @@ class Solver:
             for cell in row:
                 if cell == '*':
                     count += 1
-        return count
+        return count    
+    
+    def mark_lines(self, x, y):
+        coords = set()
+        for i in range(len(self.grid)):
+            coords.add((x,i))
+            coords.add((i,y))
+        return coords
+
+    def mark_colors(self, x, y):
+        coords = set()
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid)):
+                if self.grid[i][j] == self.grid[x][y]:
+                    coords.add((i,j))
+        return coords
+                    
+    
+    def mark_neighbors(self, x, y):
+        coords = set()
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if x+i >= len(self.grid) or y+j >= len(self.grid):
+                    continue
+                coords.add((x+i,y+j))
+        return coords
+    
+    def mark_cells(self, value, x, y):
+        coords = set()
+        coords.update(self.mark_lines(x, y))
+        coords.update(self.mark_colors(x, y))
+        coords.update(self.mark_neighbors(x, y))
+        for coord in coords:
+            curr_x = coord[0]
+            curr_y = coord[1]
+            self.marked_grid[curr_x][curr_y] += value
 
     def ck_lines(self, x, y):
         count_x = 0
@@ -37,7 +73,7 @@ class Solver:
                     return False
         return True
     
-    def ck_neighbor(self, x, y):
+    def ck_neighbors(self, x, y):
         for i in range(-1,2):
             for j in range(-1,2):
                 if x+i >= len(self.grid) or y+j >= len(self.grid):
@@ -54,7 +90,7 @@ class Solver:
             return False
         if not self.ck_colors(x,y):
             return False
-        if not self.ck_neighbor(x,y):
+        if not self.ck_neighbors(x,y):
             return False
         return True
     
