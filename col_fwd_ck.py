@@ -1,8 +1,32 @@
 from solver import Solver
-from utils import print_grid
-import time
+from example_grid import GRID
 
 class Col_fwd_ck(Solver):
+    
+    def mark_lines(self, value, x, y):
+        for i in range(len(self.grid)):
+            self.mk_vert_grid[i][y] += value
+
+    def mark_regions(self, value, x, y):
+        for i in range(len(self.grid)):
+            for j in range(len(self.grid)):
+                if self.grid[i][j] == self.grid[x][y]:
+                    self.mk_reg_grid[i][j] += value
+                    
+    def mark_neighbors(self, value, x, y):
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if x+i >= len(self.grid) or y+j >= len(self.grid) or x+i < 0 or y+j < 0:
+                    continue
+                if i == 0 and j == 0:
+                    continue
+                self.mk_nbor_grid[x+i][y+j] += value
+    
+    def mark_cells(self, value, x, y):
+        self.mark_lines(value, x, y)
+        self.mark_regions(value, x, y)
+        self.mark_neighbors(value, x, y)
+
     def place_star(self, x, y):
         self.stars_grid[x][y] = "*"
         self.mark_cells(1, x, y)
@@ -12,8 +36,6 @@ class Col_fwd_ck(Solver):
         self.mark_cells(-1, x, y)
 
     def is_placeable(self, x, y):
-        if self.mk_hor_grid[x][y] >= self.stars_number:
-            return False
         if self.mk_vert_grid[x][y] >= self.stars_number:
             return False
         if self.mk_reg_grid[x][y] >= self.stars_number:
@@ -47,59 +69,5 @@ class Col_fwd_ck(Solver):
 
 if "__main__" == __name__:
     solver = Col_fwd_ck()
-#    solver.test_marker()
-#    solver.debug_marker_grids()
     print(solver.solve(0))
     print(solver)
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    """
-    def is_placeable_debug(self, x, y):
-        print(self.mk_hor_grid[x][y])
-        if self.mk_hor_grid[x][y] >= 2:
-            return False
-        print(self.mk_vert_grid[x][y])
-        if self.mk_vert_grid[x][y] >= 2:
-            return False
-        print(self.mk_reg_grid[x][y])
-        if self.mk_reg_grid[x][y] >= 2:
-            return False
-        print(self.mk_nbor_grid[x][y])
-        if self.mk_nbor_grid[x][y] >= 2:
-            return False
-        return True
-        
-    def test_marker(self):
-        self.place_star(0,4)
-        self.place_star(0,6)
-        self.place_star(1,1)
-        self.place_star(1,9)
-        self.place_star(2,3)
-        self.place_star(2,7)
-        self.place_star(3,5)
-        self.place_star(3,9)
-        self.place_star(4,1)
-        self.place_star(4,3)
-        self.place_star(5,5)
-        self.place_star(5,8)
-        self.place_star(6,0)
-        self.place_star(6,2)
-        self.place_star(7,4)
-        self.place_star(7,7)
-        self.place_star(8,0)
-        self.place_star(8,2)
-        self.place_star(9,6)
-        self.place_star(9,8)
-        print(self)"""

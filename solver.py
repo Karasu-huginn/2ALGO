@@ -5,11 +5,12 @@ class Solver:
     def __init__(self):
         self.grid = GRID
         self.stars_grid = [[0] * len(GRID) for i in range(len(GRID))]
+        self.stars_number = STARS_NUMBER
         self.mk_vert_grid = [[0] * len(GRID) for i in range(len(GRID))]
-        self.mk_hor_grid = [[0] * len(GRID) for i in range(len(GRID))]
         self.mk_reg_grid = [[0] * len(GRID) for i in range(len(GRID))]
         self.mk_nbor_grid = [[0] * len(GRID) for i in range(len(GRID))]
-        self.stars_number = STARS_NUMBER
+        self.regs_marked = [0 for i in range(len(GRID))]
+        self.cols_marked = [0 for i in range(len(GRID))]
 
     def count_stars(self):
         count = 0
@@ -19,31 +20,6 @@ class Solver:
                     count += 1
         return count    
     
-    def mark_lines(self, value, x, y):
-        for i in range(len(self.grid)):
-            self.mk_hor_grid[x][i] += value
-            self.mk_vert_grid[i][y] += value
-
-    def mark_regions(self, value, x, y):
-        for i in range(len(self.grid)):
-            for j in range(len(self.grid)):
-                if self.grid[i][j] == self.grid[x][y]:
-                    self.mk_reg_grid[i][j] += value
-                    
-    def mark_neighbors(self, value, x, y):
-        for i in range(-1,2):
-            for j in range(-1,2):
-                if x+i >= len(self.grid) or y+j >= len(self.grid) or x+i < 0 or y+j < 0:
-                    continue
-                if i == 0 and j == 0:
-                    continue
-                self.mk_nbor_grid[x+i][y+j] += value
-    
-    def mark_cells(self, value, x, y):
-        self.mark_lines(value, x, y)
-        self.mark_regions(value, x, y)
-        self.mark_neighbors(value, x, y)
-
     def ck_lines(self, x, y):
         count_x = 0
         count_y = 0
@@ -97,13 +73,3 @@ class Solver:
                     string += COLORS[int(self.grid[x][y])]+f"  {RESET}"
             string += "\n"
         return string
-
-"""
-        for x in range(len(self.grid)):
-            for y in range(len(self.grid)):
-                if self.stars_grid[x][y] != "*":
-                    print(COLORS[int(self.grid[x][y])]+f"  {RESET}", end="")
-                else:
-                    print(COLORS[int(self.grid[x][y])]+f"{BOLD}<>{RESET}", end="")
-            print()
-"""
