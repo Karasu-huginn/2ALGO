@@ -33,7 +33,7 @@ class Solver:
     def mark_neighbors(self, value, x, y):
         for i in range(-1,2):
             for j in range(-1,2):
-                if x+i >= len(self.grid) or y+j >= len(self.grid):
+                if x+i >= len(self.grid) or y+j >= len(self.grid) or x+i < 0 or y+j < 0:
                     continue
                 if i == 0 and j == 0:
                     continue
@@ -69,7 +69,7 @@ class Solver:
     def ck_neighbors(self, x, y):
         for i in range(-1,2):
             for j in range(-1,2):
-                if x+i >= len(self.grid) or y+j >= len(self.grid):
+                if x+i >= len(self.grid) or y+j >= len(self.grid) or x+i < 0 or y+j < 0:
                     continue
                 if i == 0 and j == 0:
                     continue

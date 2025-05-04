@@ -12,16 +12,16 @@ class Col_fwd_ck(Solver):
         self.mark_cells(-1, x, y)
 
     def is_placeable(self, x, y):
-        if self.mk_hor_grid[x][y] >= 2:
+        if self.mk_hor_grid[x][y] >= self.stars_number:
             return False
-        if self.mk_vert_grid[x][y] >= 2:
+        if self.mk_vert_grid[x][y] >= self.stars_number:
             return False
-        if self.mk_reg_grid[x][y] >= 2:
+        if self.mk_reg_grid[x][y] >= self.stars_number:
             return False
-        if self.mk_nbor_grid[x][y] >= 2:
+        if self.mk_nbor_grid[x][y] > 0:
             return False
         return True
-
+    
     def solve(self, row):
         if self.count_stars() == self.stars_number * len(self.grid):     # if stars grid full
             return True
@@ -33,7 +33,6 @@ class Col_fwd_ck(Solver):
                 self.place_star(row, col_1)
 
                 for col_2 in range(col_1+1, len(self.grid)):
-                    
                     if self.is_placeable(row,col_2):
                         self.place_star(row, col_2)
 
@@ -81,12 +80,6 @@ if "__main__" == __name__:
         if self.mk_nbor_grid[x][y] >= 2:
             return False
         return True
-    
-    def debug_marker_grids(self):
-        print_grid(self.mk_hor_grid)
-        print_grid(self.mk_vert_grid)
-        print_grid(self.mk_reg_grid)
-        print_grid(self.mk_nbor_grid)
         
     def test_marker(self):
         self.place_star(0,4)
